@@ -1,0 +1,106 @@
+.cc-header {
+  background: linear-gradient(90deg, #f4f6f9 0%, #e8f0fe 100%);
+  border-bottom: 1px solid #d8dde6;
+}
+.cc-header__title {
+  display: flex;
+  align-items: center;
+}
+.cc-header__title h2 {
+  margin: 0;
+}
+.cc-header__subtitle {
+  color: #54698d;
+}
+
+.cc-filters__row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cc-content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1rem;
+}
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.cc-card {
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #ffffff;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  cursor: pointer;
+}
+.cc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+.cc-badge.high-risk {
+  background: #ffd6d6;
+  color: #b30021;
+  box-shadow: 0 0 0 2px #ffebee inset;
+}
+.cc-card.recently-updated {
+  box-shadow: 0 0 0 2px #b3e5fc, 0 6px 12px rgba(0,0,0,0.08);
+}
+.cc-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.cc-card__name {
+  font-weight: 600;
+}
+.cc-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.125rem 0;
+}
+.cc-card__footer {
+  margin-top: 0.5rem;
+}
+
+/* Risk badges */
+.cc-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.cc-badge.low { background: #e3fcef; color: #0b6b50; }
+.cc-badge.medium { background: #fff1d6; color: #8a6500; }
+.cc-badge.high { background: #ffe5e0; color: #b30021; }
+
+.cc-sidebar .slds-card {
+  border-radius: 0.5rem;
+}
+.cc-insight__text {
+  margin-bottom: 0.25rem;
+}
+
+.cc-analytics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.cc-analytic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cc-analytic__label { color: #54698d; }
+.cc-analytic__value { font-weight: 700; }
+
+@media (max-width: 1024px) {
+  .cc-content { grid-template-columns: 1fr; }
+}
+
+

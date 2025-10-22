@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Patient 360" icon-name="standard:patient">
+        <div class="slds-p-around_medium">
+            <template if:true={patient}>
+                <p><strong>{patient.Name}</strong></p>
+                <p>Condition: {patient.Condition__c}</p>
+                <p>Last Visit: {patient.Last_Visit_Date__c}</p>
+                <p>Risk Score: {patient.Risk_Score__c}</p>
+                <lightning-button label="Get AI Recommendation" variant="brand" onclick={getAi} class="slds-m-top_small"></lightning-button>
+                <template if:true={aiList}>
+                    <div class="slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_x-small">AI Insights</h3>
+                        <template for:each={aiList} for:item="item">
+                            <div key={item.id} class="slds-m-vertical_x-small">
+                                <lightning-icon icon-name="utility:bot" size="xx-small" class="slds-m-right_x-small"></lightning-icon>{item.text}
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+            <template if:false={patient}>
+                <p>Provide a Patient Id to load details.</p>
+            </template>
+
+            <template if:true={activities}>
+                <lightning-datatable key-field="Id" data={activities} columns={columns}></lightning-datatable>
+            </template>
+
+            <template if:true={ai}>
+                <div class="slds-m-top_medium">
+                    <p><strong>{ai.insightType}</strong> ({ai.severity})</p>
+                    <p>{ai.recommendationText}</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
+

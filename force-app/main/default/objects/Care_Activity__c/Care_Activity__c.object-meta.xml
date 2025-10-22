@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <label>Care Activity</label>
+    <pluralLabel>Care Activities</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <nameField>
+        <label>Care Activity Name</label>
+        <type>Text</type>
+    </nameField>
+
+    <!-- Lookup to Patient Profile -->
+    <fields>
+        <fullName>Patient__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Related Patient Profile</description>
+        <externalId>false</externalId>
+        <label>Patient</label>
+        <referenceTo>Patient_Profile__c</referenceTo>
+        <relationshipLabel>Care Activities</relationshipLabel>
+        <relationshipName>Care_Activities</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+
+    <!-- Activity Type -->
+    <fields>
+        <fullName>Activity_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Activity Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Reminder</fullName>
+                    <default>true</default>
+                    <label>Reminder</label>
+                </value>
+                <value>
+                    <fullName>Follow-up</fullName>
+                    <default>false</default>
+                    <label>Follow-up</label>
+                </value>
+                <value>
+                    <fullName>Checkup</fullName>
+                    <default>false</default>
+                    <label>Checkup</label>
+                </value>
+                <value>
+                    <fullName>Education</fullName>
+                    <default>false</default>
+                    <label>Education</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <!-- Due Date -->
+    <fields>
+        <fullName>Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+
+    <!-- Status -->
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Planned</fullName>
+                    <default>true</default>
+                    <label>Planned</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Cancelled</fullName>
+                    <default>false</default>
+                    <label>Cancelled</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <!-- Recommended Action -->
+    <fields>
+        <fullName>Recommended_Action__c</fullName>
+        <externalId>false</externalId>
+        <label>Recommended Action</label>
+        <length>32768</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+
+</CustomObject>

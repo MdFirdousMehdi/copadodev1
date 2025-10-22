@@ -1,0 +1,109 @@
+<template>
+    <!-- Header -->
+    <section class="cc-header slds-p-around_medium">
+        <div class="cc-header__title">
+            <lightning-icon icon-name="custom:custom63" alternative-text="CareConnect" size="small" class="slds-m-right_small"></lightning-icon>
+            <h2>CareConnect – Patient 360 Dashboard</h2>
+        </div>
+        <p class="cc-header__subtitle">Unified patient insights powered by AI</p>
+    </section>
+
+    <!-- Filters -->
+    <section class="cc-filters slds-p-around_medium slds-m-bottom_small">
+        <div class="cc-filters__row">
+            <lightning-input type="search" label="Search by Name or Id" value={searchKey} onchange={handleSearch} class="slds-m-right_small"></lightning-input>
+            <lightning-combobox label="Risk Category" value={riskFilter} placeholder="All" options={riskOptions} onchange={handleRiskChange}></lightning-combobox>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="cc-content slds-p-horizontal_medium">
+        <!-- Patient Grid -->
+        <div class="cc-grid">
+            <template if:true={loadingPatients}>
+                <div class="slds-align_absolute-center slds-p-around_large"><lightning-spinner alternative-text="Loading patients" size="medium"></lightning-spinner></div>
+            </template>
+            <template if:false={loadingPatients}>
+                <template if:true={filteredPatients}>
+                    <template for:each={filteredPatients} for:item="p">
+                        <article key={p.key} class="cc-card slds-card slds-p-around_medium" onclick={handleCardClick} data-id={p.id}>
+                            <div class="cc-card__header">
+                                <div class="cc-card__name">{p.name}</div>
+                                <span class={p.riskClass}>{p.riskLabel}</span>
+                            </div>
+                            <div class="cc-card__body">
+                                <div class="cc-row"><span>Age:</span><strong>{p.age}</strong></div>
+                                <div class="cc-row"><span>Condition:</span><strong>{p.condition}</strong></div>
+                                <div class="cc-row"><span>Last Visit:</span><strong>{p.lastVisitDisplay}</strong></div>
+                            </div>
+                            <div class="cc-card__footer">
+                                <lightning-button label="View Details" variant="neutral" data-id={p.id} onclick={openDetail}></lightning-button>
+                            </div>
+                        </article>
+                    </template>
+                </template>
+            </template>
+        </div>
+
+        <!-- Sidebar: AI Insights -->
+        <aside class="cc-sidebar">
+            <div class="slds-card slds-p-around_medium">
+                <div class="slds-media">
+                    <div class="slds-media__figure slds-m-right_small">
+                        <lightning-icon icon-name="utility:health" alternative-text="AI Insights" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h3 class="slds-text-title_caps">AI Insights & Recommendations</h3>
+                    </div>
+                </div>
+                <template if:true={loadingInsights}>
+                    <div class="slds-align_absolute-center slds-p-vertical_medium"><lightning-spinner alternative-text="Loading insights" size="small"></lightning-spinner></div>
+                </template>
+                <template for:each={insights} for:item="ins">
+                    <div key={ins.id} class="cc-insight slds-m-vertical_small">
+                        <div class="slds-media">
+                            <div class="slds-media__figure slds-m-right_small">
+                                <lightning-icon icon-name="utility:bot" size="x-small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <p class="cc-insight__text">{ins.text}</p>
+                                <div class="slds-m-top_x-small">
+                                    <lightning-button variant="brand-outline" label="Send Reminder" data-id={ins.patientId} onclick={sendReminder} disabled={ins.sending}></lightning-button>
+                                    <lightning-button class="slds-m-left_x-small" variant="neutral" label="Refresh" data-id={ins.patientId} onclick={refreshInsights}></lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Analytics -->
+            <c-care-connect-analytics class="slds-m-top_medium"></c-care-connect-analytics>
+        </aside>
+    </div>
+
+    <!-- Modal for Patient Detail -->
+    <template if:true={detailOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" onclick={closeDetail} class="slds-modal__close" alternative-text="Close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium">Patient Details</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={selectedPatientId}>
+                        <c-care-connect-detail patient-id={selectedPatientId}></c-care-connect-detail>
+                    </template>
+                    <template if:false={selectedPatientId}>
+                        <p>Preview (mock): {selectedPatientName}</p>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Close" onclick={closeDetail}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
+

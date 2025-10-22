@@ -1,0 +1,152 @@
+<template>
+    <section class="cc-analytics slds-p-around_medium">
+        <!-- Top Metrics Row -->
+        <div class="cc-metrics slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                <article class="slds-card cc-card metric-card metric-total">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:people" size="small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Total Patients</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="metric-value">{metrics.totalPatients}</div>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                <article class="slds-card cc-card metric-card metric-active">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:task2" size="small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Active Care Plans</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="metric-value">{metrics.activeCarePlans}</div>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                <article class="slds-card cc-card metric-card metric-risk">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="utility:warning" size="small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">High-Risk Patients</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="metric-value">{metrics.highRiskCount}</div>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+                <article class="slds-card cc-card metric-card metric-engagement">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="utility:success" size="small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Engagement Rate</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <lightning-progress-ring value={metrics.engagementRate} size="large" variant="success"></lightning-progress-ring>
+                        <div class="metric-sub">{metrics.engagementRate}%</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-top_medium">
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                <article class="slds-card cc-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Risk Distribution</h2>
+                            </div>
+                            <lightning-button variant="neutral" label="Refresh" onclick={refresh} class="slds-m-left_small"></lightning-button>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner chart-wrap">
+                        <template if:true={loading}><lightning-spinner size="small"></lightning-spinner></template>
+                        <canvas lwc:dom="manual" class="chart" data-chart="risk"></canvas>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                <article class="slds-card cc-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Engagement by Type</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner chart-wrap">
+                        <template if:true={loading}><lightning-spinner size="small"></lightning-spinner></template>
+                        <canvas lwc:dom="manual" class="chart" data-chart="type"></canvas>
+                    </div>
+                </article>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                <article class="slds-card cc-card">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Weekly Trend</h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner chart-wrap">
+                        <template if:true={loading}><lightning-spinner size="small"></lightning-spinner></template>
+                        <canvas lwc:dom="manual" class="chart" data-chart="weekly"></canvas>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <!-- Insights Summary -->
+        <div class="slds-m-top_medium">
+            <article class="slds-card cc-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">AI Recommendations Summary</h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <template if:true={insightSummary}>
+                        <div class="tags">
+                            <template for:each={insightSummary} for:item="it">
+                                <span key={it.label} class="slds-badge slds-theme_info slds-m-right_x-small slds-m-bottom_x-small">{it.label} ({it.value})</span>
+                            </template>
+                        </div>
+                    </template>
+                    <template if:false={insightSummary}>
+                        <p>No insights yet.</p>
+                    </template>
+                </div>
+            </article>
+        </div>
+    </section>
+</template>
+
