@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="Group Manager" icon-name="standard:groups">
+        <div class="slds-p-around_medium">
+
+            <!-- Input Fields -->
+            <lightning-input label="Group Name" value={groupName} onchange={handleInputChange} data-field="groupName"></lightning-input>
+            <lightning-textarea label="Description" value={description} onchange={handleInputChange} data-field="description"></lightning-textarea>
+
+            <lightning-button variant="brand" label="Create Group" onclick={handleCreate}></lightning-button>
+        </div>
+
+        <div class="slds-m-around_medium">
+            <template if:true={groups}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={groups}
+                    columns={columns}>
+                </lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+</template>
