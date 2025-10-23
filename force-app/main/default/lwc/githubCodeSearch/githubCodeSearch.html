@@ -1,0 +1,192 @@
+<template>
+    <lightning-card icon-name="custom:custom63">
+        <div slot="title">
+            <div class="card-title">
+                <span class="title-text">GitHub Search</span>
+            </div>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Search Input Section -->
+            <div class="search-container">
+                <div class="search-header">
+                    <h3 class="section-title">
+                        <lightning-icon icon-name="utility:search" size="x-small" class="section-icon"></lightning-icon>
+                        Search Parameters
+                    </h3>
+                </div>
+                
+                <div class="input-grid">
+                    <div class="input-wrapper animate-slide-in">
+                        <lightning-input
+                            label="Search Term"
+                            placeholder="e.g., AccountHandler, etc."
+                            value={searchTerm}
+                            onchange={handleSearchTermChange}
+                            class="custom-input"
+                        ></lightning-input>
+                    </div>
+                    <div class="input-wrapper animate-slide-in delay-1">
+                        <lightning-input
+                            label="Repository"
+                            placeholder="Username/repo"
+                            value={repository}
+                            onchange={handleRepositoryChange}
+                            class="custom-input"
+                        ></lightning-input>
+                    </div>
+                </div>
+
+                <div class="button-container animate-fade-in delay-2">
+                    <lightning-button
+                        variant="brand"
+                        label="Search GitHub"
+                        title="Search GitHub"
+                        onclick={handleSearch}
+                        disabled={isSearchDisabled}
+                        icon-name="utility:search"
+                        class="search-button"
+                    ></lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        label="Clear"
+                        title="Clear Results"
+                        onclick={handleClear}
+                        icon-name="utility:clear"
+                        class="clear-button"
+                    ></lightning-button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="loading-container">
+                    <div class="loading-content">
+                        <lightning-spinner
+                            alternative-text="Searching GitHub..."
+                            size="medium"
+                            variant="brand"
+                        ></lightning-spinner>
+                        <p class="loading-text">Searching GitHub repositories...</p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={errorMessage}>
+                <div class="error-container animate-shake">
+                    <div class="error-content">
+                        <lightning-icon icon-name="utility:error" size="small" variant="error" class="error-icon"></lightning-icon>
+                        <div class="error-text">
+                            <h3 class="error-title">Error</h3>
+                            <p>{errorMessage}</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Results Section -->
+            <template if:true={showResults}>
+                <div class="results-container animate-fade-in">
+                    <div class="results-header">
+                        <div class="results-info">
+                            <lightning-icon icon-name="utility:success" size="small" variant="success" class="results-icon"></lightning-icon>
+                            <h3 class="results-title">
+                                Results
+                                <span class="results-count">{totalCount} {resultText}</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="table-header">
+                                        <div class="header-content">
+                                            <lightning-icon icon-name="utility:file" size="xx-small"></lightning-icon>
+                                            <span>File</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="table-header">
+                                        <div class="header-content">
+                                            <lightning-icon icon-name="utility:categories" size="xx-small"></lightning-icon>
+                                            <span>Type</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="table-header">
+                                        <div class="header-content">
+                                            <lightning-icon icon-name="utility:breadcrumbs" size="xx-small"></lightning-icon>
+                                            <span>Path</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="table-header">
+                                        <div class="header-content">
+                                            <lightning-icon icon-name="utility:database" size="xx-small"></lightning-icon>
+                                            <span>Repository</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="table-header">
+                                        <div class="header-content">
+                                            <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                            <span>Owner</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={searchResults} for:item="result" for:index="index">
+                                    <tr key={result.sha} class="table-row" data-index={index}>
+                                        <td data-label="Name" class="table-cell">
+                                            <div class="cell-content">
+                                                <lightning-icon icon-name="doctype:attachment" size="xx-small" class="file-icon"></lightning-icon>
+                                                <a href={result.html_url} target="_blank" rel="noopener noreferrer" class="file-link">
+                                                    {result.name}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td data-label="Type" class="table-cell">
+                                            <span class={result.badgeClass}>{result.fileType}</span>
+                                        </td>
+                                        <td data-label="Path" class="table-cell">
+                                            <div class="path-content">
+                                                <span class="path-text" title={result.path}>{result.path}</span>
+                                            </div>
+                                        </td>
+                                        <td data-label="Repository" class="table-cell">
+                                            <div class="cell-content">
+                                                <lightning-icon icon-name="utility:stage" size="xx-small" class="repo-icon"></lightning-icon>
+                                                <a href={result.repoUrl} target="_blank" rel="noopener noreferrer" class="repo-link">
+                                                    {result.repoName}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td data-label="Owner" class="table-cell">
+                                            <div class="cell-content">
+                                                <a href={result.ownerUrl} target="_blank" rel="noopener noreferrer" class="owner-link">
+                                                    {result.owner}
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+
+            <!-- No Results Message -->
+            <template if:true={showNoResults}>
+                <div class="no-results-container animate-fade-in">
+                    <div class="no-results-content">
+                        <lightning-icon icon-name="utility:search" size="large" class="no-results-icon"></lightning-icon>
+                        <h3 class="no-results-title">No Results Found</h3>
+                        <p class="no-results-text">
+                            Try adjusting your search criteria or check the repository name.
+                        </p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
